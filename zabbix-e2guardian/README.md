@@ -15,7 +15,7 @@ This Template was created on and for Zabbix 3.4 and E2Guardian 4.1.x on Debian 9
    1. dstatinterval = 300  # = 5 minutes
 1. Import the Template.
 1. Link the Template to your E2guardian Host.
-1. Check the User Macro if the Path to the dstats.log fits your configuration
+1. Check the User Macro if the Path to the dstats.log fits your configuration.
 
 ## Example
 
