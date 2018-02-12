@@ -19,4 +19,4 @@ This Template was created on and for Zabbix 3.4 and E2Guardian 4.1.x on Debian 9
 
 ## Example
 
-Image
+![Latest Data](example01.png)
