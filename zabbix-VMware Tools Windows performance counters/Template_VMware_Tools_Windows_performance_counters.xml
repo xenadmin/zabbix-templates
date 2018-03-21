@@ -6,9 +6,6 @@
         <group>
             <name>Templates/VMware</name>
         </group>
-        <group>
-            <name>Templates/Work in progress</name>
-        </group>
     </groups>
     <templates>
         <template>
@@ -18,9 +15,6 @@
             <groups>
                 <group>
                     <name>Templates/VMware</name>
-                </group>
-                <group>
-                    <name>Templates/Work in progress</name>
                 </group>
             </groups>
             <applications>
