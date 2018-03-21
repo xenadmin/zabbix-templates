@@ -17,6 +17,7 @@ This Template was created on and for Zabbix 3.4 and VMware Tools 9+ on Windows S
 - 19 Items, 1 disabled which I never needed (VM Processor - Shares)
    - Every Item has the Description field populated with the official description of the perfmon values. 
 - No Trigger, Graphs, Screens or LLD Discovery rules defined.
+- I did my very best at defining the Preprocessing steps for each item value, like MB, Hz and Percent. I hope I got them all right.
 
 ## Example
 
