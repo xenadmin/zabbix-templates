@@ -30,4 +30,4 @@ There is no obvoious reason I'm aware of that would prevent this from working wi
 
 ## Changes
 - March 2018: initial commit.
-- 03. April 2018: Switch to Active Agent & converted system.run item keys to proper Zabbix custom User parameters.
+- \03. April 2018: Switch to Active Agent & converted system.run item keys to proper Zabbix custom User parameters.
