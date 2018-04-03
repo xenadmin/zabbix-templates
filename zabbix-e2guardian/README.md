@@ -25,7 +25,7 @@ There is no obvoious reason I'm aware of, that would prevent this from working w
 ## Notes
 
 1. Latest Version of Template is provided with Item type `Zabbix agent (active)`, but can easily be switched via Zabbix Frontend Mass Update!
-1. Includes 1 Graph which uses configured count of max http-workers as X axis. 
+1. Includes 1 Graph which uses configured count of max http-workers as Y axis. 
 1. Includes 2 Triggers which check if worker or log queue build up. 
 
 ## Example Screenshot of Latest Data
