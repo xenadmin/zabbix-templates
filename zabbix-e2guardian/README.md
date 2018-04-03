@@ -33,5 +33,5 @@ There is no obvoious reason I'm aware of, that would prevent this from working w
 ![Latest Data](example01.png)
 
 ## Changes
-- March 2018: initial commit.
+- February 2018: initial commit.
 - 03 April 2018: Switch to Zabbix agent (active) & converted system.run item keys to proper Zabbix custom [User parameters](https://www.zabbix.com/documentation/3.4/manual/config/items/userparameters).
