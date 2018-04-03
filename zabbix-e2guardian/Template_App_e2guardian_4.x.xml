@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>3.4</version>
-    <date>2018-02-12T17:21:11Z</date>
+    <date>2018-04-03T18:29:56Z</date>
     <groups>
         <group>
             <name>Templates</name>
         </group>
-        <group>
-            <name>Templates/Templates App</name>
-        </group>
     </groups>
     <templates>
         <template>
-            <template>Template App e2guardian</template>
-            <name>Template App e2guardian</name>
-            <description>https://github.com/e2guardian/e2guardian/blob/master/notes/dstats_format</description>
+            <template>Template App e2guardian - Active</template>
+            <name>Template App e2guardian - Active</name>
+            <description>https://github.com/e2guardian/e2guardian/blob/master/notes/dstats_format&#13;
+&#13;
+USER.MACRO={$E2GUARDIAN_DSTATS}&#13;
+&#13;
+UserParameter=e2guardian[*],tail -1 $1 | cut -f $2</description>
             <groups>
                 <group>
                     <name>Templates</name>
-                </group>
-                <group>
-                    <name>Templates/Templates App</name>
-                </group>
-                <group>
-                    <name>Templates/Templates Neu</name>
                 </group>
             </groups>
             <applications>
@@ -34,10 +29,10 @@
             <items>
                 <item>
                     <name>e2guardian - timestamp of dstats dump</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 1]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},1]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -75,10 +70,10 @@
                 </item>
                 <item>
                     <name>e2guardian - httpworkers total</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 2]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},2]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -116,10 +111,10 @@
                 </item>
                 <item>
                     <name>e2guardian - httpworkers busy</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 3]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},3]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -157,10 +152,10 @@
                 </item>
                 <item>
                     <name>e2guardian - httpworkers queue</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 4]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},4]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -202,10 +197,10 @@
                 </item>
                 <item>
                     <name>e2guardian - log queue</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 5]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},5]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -245,10 +240,10 @@
                 </item>
                 <item>
                     <name>e2guardian - total sum connections each 5 minutes</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 6]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},6]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -286,10 +281,10 @@
                 </item>
                 <item>
                     <name>e2guardian - connections per second</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 7]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},7]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -327,10 +322,10 @@
                 </item>
                 <item>
                     <name>e2guardian - requests since last stats dump</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 8]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},8]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -370,10 +365,10 @@
                 </item>
                 <item>
                     <name>e2guardian - requests per second</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 9]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},9]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -411,10 +406,10 @@
                 </item>
                 <item>
                     <name>e2guardian - maximum number file descriptor in use</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 10]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},10]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -452,10 +447,10 @@
                 </item>
                 <item>
                     <name>e2guardian - Number of List Option Containers in use</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 11]</key>
+                    <key>e2guardian[{$E2GUARDIAN_DSTATS},11]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>180d</trends>
@@ -510,7 +505,7 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template App e2guardian:system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 4].min(30m)}&gt;0</expression>
+            <expression>{Template App e2guardian - Active:e2guardian[{$E2GUARDIAN_DSTATS},4].min(30m)}&gt;0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>e2guardian - connections waiting in queue for a worker thread</name>
@@ -526,7 +521,7 @@
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App e2guardian:system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 5].min(30m)}&gt;0</expression>
+            <expression>{Template App e2guardian - Active:e2guardian[{$E2GUARDIAN_DSTATS},5].min(30m)}&gt;0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>e2guardian - messages waiting to be logged to disk</name>
@@ -560,8 +555,8 @@
             <ymax_type_1>2</ymax_type_1>
             <ymin_item_1>0</ymin_item_1>
             <ymax_item_1>
-                <host>Template App e2guardian</host>
-                <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 2]</key>
+                <host>Template App e2guardian - Active</host>
+                <key>e2guardian[{$E2GUARDIAN_DSTATS},2]</key>
             </ymax_item_1>
             <graph_items>
                 <graph_item>
@@ -572,8 +567,8 @@
                     <calc_fnc>2</calc_fnc>
                     <type>0</type>
                     <item>
-                        <host>Template App e2guardian</host>
-                        <key>system.run[tail -1 {$E2GUARDIAN_DSTATS} | cut -f 3]</key>
+                        <host>Template App e2guardian - Active</host>
+                        <key>e2guardian[{$E2GUARDIAN_DSTATS},3]</key>
                     </item>
                 </graph_item>
             </graph_items>
