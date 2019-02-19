@@ -1,6 +1,7 @@
 # Zabbix 3.4 - VMware Tools Windows performance counters Template
 
 ## Introduction
+
 This is my approach for a performance monitoring Template of VMware Tools for Windows. 
 
 This Template was created on and for Zabbix 3.4 and VMware Tools 9+ on Windows Server 2008 R2 / 2012 R2 / 2016.
