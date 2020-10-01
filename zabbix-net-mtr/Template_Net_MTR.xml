@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-10-01T13:29:33Z</date>
+    <groups>
+        <group>
+            <name>Templates/Applications</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Net MTR</template>
+            <name>Template Net MTR</name>
+            <description>Created by Marco Hofmann&#13;
+https://www.meinekleinefarm.net/zabbix-template-net-mtr-my-traceroute/&#13;
+https://github.com/xenadmin/zabbix-templates/tree/master/zabbix-net-mtr&#13;
+&#13;
+Tested on Debian Stable&#13;
+apt install mtr-tiny&#13;
+https://packages.debian.org/stable/mtr-tiny</description>
+            <groups>
+                <group>
+                    <name>Templates/Applications</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Master Items</name>
+                </application>
+                <application>
+                    <name>MTR Average RTT(ms)</name>
+                </application>
+                <application>
+                    <name>MTR Hosts</name>
+                </application>
+                <application>
+                    <name>MTR Loss%</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>MTR Trace Master</name>
+                    <type>EXTERNAL</type>
+                    <key>mtr.sh[{HOST.IP}]</key>
+                    <history>0</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>Master Items</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.report.hubs</params>
+                        </step>
+                    </preprocessing>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>MTR Hops</name>
+                    <type>DEPENDENT</type>
+                    <key>mtr.hop.discovery</key>
+                    <delay>0</delay>
+                    <lifetime>1d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>MTR Hop {#HOP_ID}: {#HOP_HOST} - Average RTT(ms)</name>
+                            <type>DEPENDENT</type>
+                            <key>mtr.hop.avg[{#HOP_ID}]</key>
+                            <delay>0</delay>
+                            <history>14d</history>
+                            <trends>180d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>!ms</units>
+                            <applications>
+                                <application>
+                                    <name>MTR Average RTT(ms)</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.count == &quot;{#HOP_ID}&quot;)][&quot;Avg&quot;].first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>mtr.sh[{HOST.IP}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>MTR Hop {#HOP_ID}: {#HOP_HOST}</name>
+                            <type>DEPENDENT</type>
+                            <key>mtr.hop.host[{#HOP_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>MTR Hosts</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.count == &quot;{#HOP_ID}&quot;)].host.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>mtr.sh[{HOST.IP}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>MTR Hop {#HOP_ID}: {#HOP_HOST} - ICMP Loss%</name>
+                            <type>DEPENDENT</type>
+                            <key>mtr.hop.loss[{#HOP_ID}]</key>
+                            <delay>0</delay>
+                            <history>14d</history>
+                            <trends>180d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>MTR Loss%</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.count == &quot;{#HOP_ID}&quot;)][&quot;Loss%&quot;].first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>mtr.sh[{HOST.IP}]</key>
+                            </master_item>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>mtr.sh[{HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#HOP_HOST}</lld_macro>
+                            <path>$.['host']</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#HOP_ID}</lld_macro>
+                            <path>$.['count']</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+</zabbix_export>
