@@ -2,19 +2,14 @@
 <zabbix_export>
     <version>5.0</version>
     <date>2021-12-09T10:17:54Z</date>
-    <groups>
-        <group>
-            <name>CS3-Templates</name>
-        </group>
-    </groups>
     <templates>
         <template>
-            <template>CS3 - Virtual Windows Machines</template>
-            <name>CS3 - Virtual Windows Machines</name>
+            <template>Virtual Windows Machines</template>
+            <name>Virtual Windows Machines</name>
             <description>Bunch of performance/systemcounter for virtual windows machines</description>
             <groups>
                 <group>
-                    <name>CS3-Templates</name>
+                    <name>Templates</name>
                 </group>
             </groups>
             <applications>
@@ -26,7 +21,7 @@
                 <item>
                     <name>VM Memory - Memory Free in MB</name>
                     <type>CALCULATED</type>
-                    <key>cs3.windows.vmtools.memory.free</key>
+                    <key>windows.vmtools.memory.free</key>
                     <history>7d</history>
                     <trends>180d</trends>
                     <units>B</units>
@@ -75,14 +70,14 @@
                     <triggers>
                         <trigger>
                             <expression>{last(5m)}&gt;0</expression>
-                            <name>VM Memory Ballooning auf {HOST.NAME} (MB{ITEM.LASTVALUE})</name>
-                            <opdata>Auf der virtuellen Windowsmachine {HOST.NAME} wurde VM Memory Ballooning festgestellt. Dies deutet auf einen Memoryengpass des VMware Hostsystems hin.</opdata>
+                            <name>VM Memory Ballooning detected (MB{ITEM.LASTVALUE})</name>
+                            <opdata>VM memory ballooning detected on virtual machine {HOST.NAME}.</opdata>
                             <priority>WARNING</priority>
-                            <description>Indiz für Ressourcenmangel im Memorybereich.</description>
+                            <description></description>
                             <dependencies>
                                 <dependency>
-                                    <name>VM Memory Swapping auf {HOST.NAME} (MB{ITEM.LASTVALUE})</name>
-                                    <expression>{CS3 - Virtual Windows Machines:perf_counter_en[\VM Memory\Memory Swapped in MB].last(5m)}&gt;0</expression>
+                                    <name>VM Memory Swapping detected (MB{ITEM.LASTVALUE})</name>
+                                    <expression>{Virtual Windows Machines:perf_counter_en[\VM Memory\Memory Swapped in MB].last(5m)}&gt;0</expression>
                                 </dependency>
                             </dependencies>
                             <tags>
@@ -234,10 +229,10 @@
                     <triggers>
                         <trigger>
                             <expression>{last(5m)}&gt;0</expression>
-                            <name>VM Memory Swapping auf {HOST.NAME} (MB{ITEM.LASTVALUE})</name>
-                            <opdata>Auf der virtuellen Windowsmachine {HOST.NAME} wurde VM Memory Swapping festgestellt. Dies deutet auf einen Memoryengpass des VMware Hostsystems hin.</opdata>
+                            <name>VM Memory Swapping detected (MB{ITEM.LASTVALUE})</name>
+                            <opdata>VM memory swapping detected on virtual machine {HOST.NAME}</opdata>
                             <priority>HIGH</priority>
-                            <description>Indiz für Ressourcenmangel im Memorybereich.</description>
+                            <description></description>
                             <tags>
                                 <tag>
                                     <tag>Application</tag>
@@ -395,10 +390,6 @@
             </items>
             <tags>
                 <tag>
-                    <tag>Appliaction</tag>
-                    <value>CS3</value>
-                </tag>
-                <tag>
                     <tag>Application</tag>
                     <value>VMware</value>
                 </tag>
@@ -414,7 +405,7 @@
                             <style>0</style>
                             <resource>
                                 <name>Virtual Windows CPU Performance</name>
-                                <host>CS3 - Virtual Windows Machines</host>
+                                <host>Virtual Windows Machines</host>
                             </resource>
                             <width>500</width>
                             <height>100</height>
@@ -436,7 +427,7 @@
                             <style>0</style>
                             <resource>
                                 <name>Virtual Windows CPU Processor Time</name>
-                                <host>CS3 - Virtual Windows Machines</host>
+                                <host>Virtual Windows Machines</host>
                             </resource>
                             <width>500</width>
                             <height>100</height>
@@ -458,7 +449,7 @@
                             <style>0</style>
                             <resource>
                                 <name>Virtual Windows CPU Stolen Time</name>
-                                <host>CS3 - Virtual Windows Machines</host>
+                                <host>Virtual Windows Machines</host>
                             </resource>
                             <width>500</width>
                             <height>100</height>
@@ -480,7 +471,7 @@
                             <style>0</style>
                             <resource>
                                 <name>Virtual Windows Memory Performance</name>
-                                <host>CS3 - Virtual Windows Machines</host>
+                                <host>Virtual Windows Machines</host>
                             </resource>
                             <width>500</width>
                             <height>100</height>
@@ -502,7 +493,7 @@
                             <style>0</style>
                             <resource>
                                 <name>Virtual Windows Memory Shares</name>
-                                <host>CS3 - Virtual Windows Machines</host>
+                                <host>Virtual Windows Machines</host>
                             </resource>
                             <width>500</width>
                             <height>100</height>
@@ -532,7 +523,7 @@
                     <sortorder>1</sortorder>
                     <color>1A7C11</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Processor(_Total)\Effective VM Speed in MHz]</key>
                     </item>
                 </graph_item>
@@ -540,7 +531,7 @@
                     <sortorder>2</sortorder>
                     <color>F63100</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Processor(_Total)\Host processor speed in MHz]</key>
                     </item>
                 </graph_item>
@@ -548,7 +539,7 @@
                     <sortorder>3</sortorder>
                     <color>A54F10</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Processor(_Total)\Reservation in MHz]</key>
                     </item>
                 </graph_item>
@@ -561,7 +552,7 @@
                     <sortorder>1</sortorder>
                     <color>1A7C11</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Processor(_Total)\% Processor Time]</key>
                     </item>
                 </graph_item>
@@ -574,7 +565,7 @@
                     <sortorder>1</sortorder>
                     <color>1A7C11</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Processor(_Total)\CPU stolen time]</key>
                     </item>
                 </graph_item>
@@ -587,7 +578,7 @@
                     <sortorder>1</sortorder>
                     <color>1A7C11</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Active in MB]</key>
                     </item>
                 </graph_item>
@@ -595,7 +586,7 @@
                     <sortorder>2</sortorder>
                     <color>F63100</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Ballooned in MB]</key>
                     </item>
                 </graph_item>
@@ -603,7 +594,7 @@
                     <sortorder>3</sortorder>
                     <color>FC6EA3</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Mapped in MB]</key>
                     </item>
                 </graph_item>
@@ -611,7 +602,7 @@
                     <sortorder>4</sortorder>
                     <color>6C59DC</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Overhead in MB]</key>
                     </item>
                 </graph_item>
@@ -619,7 +610,7 @@
                     <sortorder>5</sortorder>
                     <color>AC8C14</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Swapped in MB]</key>
                     </item>
                 </graph_item>
@@ -627,7 +618,7 @@
                     <sortorder>6</sortorder>
                     <color>611F27</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Target Size]</key>
                     </item>
                 </graph_item>
@@ -635,7 +626,7 @@
                     <sortorder>7</sortorder>
                     <color>F230E0</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Used in MB]</key>
                     </item>
                 </graph_item>
@@ -648,7 +639,7 @@
                     <sortorder>1</sortorder>
                     <color>1A7C11</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Shared in MB]</key>
                     </item>
                 </graph_item>
@@ -656,7 +647,7 @@
                     <sortorder>2</sortorder>
                     <color>F63100</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Shared Saved in MB]</key>
                     </item>
                 </graph_item>
@@ -664,7 +655,7 @@
                     <sortorder>3</sortorder>
                     <color>2774A4</color>
                     <item>
-                        <host>CS3 - Virtual Windows Machines</host>
+                        <host>Virtual Windows Machines</host>
                         <key>perf_counter_en[\VM Memory\Memory Shares]</key>
                     </item>
                 </graph_item>
