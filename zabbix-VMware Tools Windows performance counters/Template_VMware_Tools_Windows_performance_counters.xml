@@ -1,896 +1,674 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>3.4</version>
-    <date>2018-03-21T17:14:56Z</date>
+    <version>5.0</version>
+    <date>2021-12-09T10:17:54Z</date>
     <groups>
         <group>
-            <name>Templates/VMware</name>
+            <name>CS3-Templates</name>
         </group>
     </groups>
     <templates>
         <template>
-            <template>Template VMware Tools Windows performance counters</template>
-            <name>Template VMware Tools Windows performance counters</name>
-            <description/>
+            <template>CS3 - Virtual Windows Machines</template>
+            <name>CS3 - Virtual Windows Machines</name>
+            <description>Bunch of performance/systemcounter for virtual windows machines</description>
             <groups>
                 <group>
-                    <name>Templates/VMware</name>
+                    <name>CS3-Templates</name>
                 </group>
             </groups>
             <applications>
                 <application>
-                    <name>VMware Tools Perfmon - VM Memory</name>
-                </application>
-                <application>
-                    <name>VMware Tools Perfmon - VM Processor</name>
+                    <name>VM Tools Performance</name>
                 </application>
             </applications>
             <items>
                 <item>
-                    <name>VM Memory - Memory Active in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Active in MB&quot;]</key>
-                    <delay>1m</delay>
+                    <name>VM Memory - Memory Free in MB</name>
+                    <type>CALCULATED</type>
+                    <key>cs3.windows.vmtools.memory.free</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The estimated amount of memory the virtual machine is actively using.</description>
-                    <inventory_link>0</inventory_link>
+                    <params>last(&quot;perf_counter_en[\VM Memory\Memory Limit in MB]&quot;) - last(&quot;perf_counter_en[\VM Memory\Memory Used in MB]&quot;)</params>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
+                </item>
+                <item>
+                    <name>VM Memory - Memory Active in MB</name>
+                    <key>perf_counter_en[\VM Memory\Memory Active in MB]</key>
+                    <history>7d</history>
+                    <trends>180d</trends>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>VM Tools Performance</name>
+                        </application>
+                    </applications>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Memory - Memory Ballooned in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Ballooned in MB&quot;]</key>
-                    <delay>1m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Ballooned in MB]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The amount of memory that has been reclaimed from this virtual machine via the VMware Memory Balloon mechanism.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(5m)}&gt;0</expression>
+                            <name>VM Memory Ballooning auf {HOST.NAME} (MB{ITEM.LASTVALUE})</name>
+                            <opdata>Auf der virtuellen Windowsmachine {HOST.NAME} wurde VM Memory Ballooning festgestellt. Dies deutet auf einen Memoryengpass des VMware Hostsystems hin.</opdata>
+                            <priority>WARNING</priority>
+                            <description>Indiz für Ressourcenmangel im Memorybereich.</description>
+                            <dependencies>
+                                <dependency>
+                                    <name>VM Memory Swapping auf {HOST.NAME} (MB{ITEM.LASTVALUE})</name>
+                                    <expression>{CS3 - Virtual Windows Machines:perf_counter_en[\VM Memory\Memory Swapped in MB].last(5m)}&gt;0</expression>
+                                </dependency>
+                            </dependencies>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM Performance</value>
+                                </tag>
+                            </tags>
+                        </trigger>
+                    </triggers>
                 </item>
                 <item>
                     <name>VM Memory - Memory Limit in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Limit in MB&quot;]</key>
-                    <delay>5m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Limit in MB]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The maximum amount of memory that is allowed to the virtual machine. Assigning a Memory Limit ensures that this virtual machine never consumes more than a certain amount of the allowed memory. By limiting the amount of memory consumed, a portion of this shared resource is allowed to other virtual machines.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Memory - Memory Mapped in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Mapped in MB&quot;]</key>
-                    <delay>1m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Mapped in MB]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The mapped memory size of this virtual machine. This is the current total amount of guest memory that is backed by physical memory. Note that this number may include pages of memory shared between multiple virtual machines and thus may be an overestimate of the amount of physical host memory *consumed* by this virtual machine.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Memory - Memory Overhead in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Overhead in MB&quot;]</key>
-                    <delay>1m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Overhead in MB]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The amount of overhead memory associated with this virtual machine consumed on the host system.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Memory - Memory Reservation in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Reservation in MB&quot;]</key>
-                    <delay>5m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Reservation in MB]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The minimum amount of memory that is guaranteed to the virtual machine. Assigning a Memory Reservation ensures that even as other virtual machines on the same host consume memory, there is still a certain minimum amount for this virtual machine.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Memory - Memory Shared in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Shared in MB&quot;]</key>
-                    <delay>5m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Shared in MB]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The amount of physical memory associated with this virtual machine that is copy-on-write (COW) shared on the host.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Memory - Memory Shared Saved in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Shared Saved in MB&quot;]</key>
-                    <delay>1m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Shared Saved in MB]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The estimated amount of physical memory on the host saved from copy-on-write (COW) shared guest physical memory.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Memory - Memory Shares</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Shares&quot;]</key>
-                    <delay>5m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Shares]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>1</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The number of memory shares allocated to the virtual machine.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                    <preprocessing>
-                        <step>
-                            <type>1</type>
-                            <params>1048576</params>
-                        </step>
-                    </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Memory - Memory Swapped in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Swapped in MB&quot;]</key>
-                    <delay>1m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Swapped in MB]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The amount of memory associated with this virtual machine that has been swapped by ESX.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(5m)}&gt;0</expression>
+                            <name>VM Memory Swapping auf {HOST.NAME} (MB{ITEM.LASTVALUE})</name>
+                            <opdata>Auf der virtuellen Windowsmachine {HOST.NAME} wurde VM Memory Swapping festgestellt. Dies deutet auf einen Memoryengpass des VMware Hostsystems hin.</opdata>
+                            <priority>HIGH</priority>
+                            <description>Indiz für Ressourcenmangel im Memorybereich.</description>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM Performance</value>
+                                </tag>
+                            </tags>
+                        </trigger>
+                    </triggers>
                 </item>
                 <item>
                     <name>VM Memory - Memory Target Size</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Target Size&quot;]</key>
-                    <delay>1m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Target Size]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>Memory Target Size.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Memory - Memory Used in MB</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Memory\Memory Used in MB&quot;]</key>
-                    <delay>1m</delay>
+                    <key>perf_counter_en[\VM Memory\Memory Used in MB]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>B</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The estimated amount of physical host memory currently consumed for this virtual machine's physical memory. This is the same as (Memory Mapped in MB) - (Memory Shared Saved in MB).</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Memory</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1048576</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
-                    <name>VM Processor - % Processor Time</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Processor(_Total)\% Processor Time&quot;]</key>
-                    <delay>1m</delay>
+                    <name>VM Processor - CPU Processor Time in %</name>
+                    <key>perf_counter_en[\VM Processor(_Total)\% Processor Time]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>0</value_type>
-                    <allowed_hosts/>
+                    <value_type>FLOAT</value_type>
                     <units>%</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>Current load of the VM's virtual processor.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Processor</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                    <preprocessing/>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Processor - CPU stolen time</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Processor(_Total)\CPU stolen time&quot;]</key>
-                    <delay>1m</delay>
+                    <key>perf_counter_en[\VM Processor(_Total)\CPU stolen time]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>0</value_type>
-                    <allowed_hosts/>
+                    <value_type>FLOAT</value_type>
                     <units>ms</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The time (in ms) that the VM was runnable but not scheduled to run.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Processor</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                    <preprocessing/>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Processor - Effective VM Speed in MHz</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Processor(_Total)\Effective VM Speed in MHz&quot;]</key>
-                    <delay>1m</delay>
+                    <key>perf_counter_en[\VM Processor(_Total)\Effective VM Speed in MHz]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>Hz</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The approximate average effective speed of the VM's virtual CPU over the time period between the two samples.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Processor</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1000000</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Processor - Host processor speed in MHz</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Processor(_Total)\Host processor speed in MHz&quot;]</key>
-                    <delay>10m</delay>
+                    <key>perf_counter_en[\VM Processor(_Total)\Host processor speed in MHz]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>Hz</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>Host Processor speed.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Processor</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1000000</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Processor - Limit in MHz</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Processor(_Total)\Limit in MHz&quot;]</key>
-                    <delay>10m</delay>
+                    <key>perf_counter_en[\VM Processor(_Total)\Limit in MHz]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>Hz</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The maximum processing power in MHz allowed to the virtual machine. Assigning a CPU Limit ensures that this virtual machine never consumes more than a certain amount of the available processor power. By limiting the amount of processing power consumed, a portion of the processing power becomes available to other virtual machines.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Processor</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1000000</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Processor - Reservation in MHz</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Processor(_Total)\Reservation in MHz&quot;]</key>
-                    <delay>10m</delay>
+                    <key>perf_counter_en[\VM Processor(_Total)\Reservation in MHz]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
                     <units>Hz</units>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The minimum processing power in MHz available to the virtual machine. Assigning a CPU Reservation ensures that even as other virtual machines on the same host consume shared processing power, there is still a certain minimum amount for this virtual machine.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Processor</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
                     <preprocessing>
                         <step>
-                            <type>1</type>
+                            <type>MULTIPLIER</type>
                             <params>1000000</params>
                         </step>
                     </preprocessing>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
                 <item>
                     <name>VM Processor - Shares</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>perf_counter[&quot;\VM Processor(_Total)\Shares&quot;]</key>
-                    <delay>10m</delay>
+                    <key>perf_counter_en[\VM Processor(_Total)\Shares]</key>
                     <history>7d</history>
                     <trends>180d</trends>
-                    <status>1</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
-                    <units/>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>The number of CPU shares allocated to the virtual machine.</description>
-                    <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>VMware Tools Perfmon - VM Processor</name>
+                            <name>VM Tools Performance</name>
                         </application>
                     </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                    <preprocessing/>
-                    <jmx_endpoint/>
-                    <master_item/>
                 </item>
             </items>
-            <discovery_rules/>
-            <httptests/>
-            <macros/>
-            <templates/>
-            <screens/>
+            <tags>
+                <tag>
+                    <tag>Appliaction</tag>
+                    <value>CS3</value>
+                </tag>
+                <tag>
+                    <tag>Application</tag>
+                    <value>VMware</value>
+                </tag>
+            </tags>
+            <screens>
+                <screen>
+                    <name>Virtual Machine Performance</name>
+                    <hsize>3</hsize>
+                    <vsize>2</vsize>
+                    <screen_items>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Virtual Windows CPU Performance</name>
+                                <host>CS3 - Virtual Windows Machines</host>
+                            </resource>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>0</x>
+                            <y>0</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Virtual Windows CPU Processor Time</name>
+                                <host>CS3 - Virtual Windows Machines</host>
+                            </resource>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>1</x>
+                            <y>0</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Virtual Windows CPU Stolen Time</name>
+                                <host>CS3 - Virtual Windows Machines</host>
+                            </resource>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>2</x>
+                            <y>0</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Virtual Windows Memory Performance</name>
+                                <host>CS3 - Virtual Windows Machines</host>
+                            </resource>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>0</x>
+                            <y>1</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Virtual Windows Memory Shares</name>
+                                <host>CS3 - Virtual Windows Machines</host>
+                            </resource>
+                            <width>500</width>
+                            <height>100</height>
+                            <x>1</x>
+                            <y>1</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                    </screen_items>
+                </screen>
+            </screens>
         </template>
     </templates>
+    <graphs>
+        <graph>
+            <name>Virtual Windows CPU Performance</name>
+            <graph_items>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Processor(_Total)\Effective VM Speed in MHz]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <color>F63100</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Processor(_Total)\Host processor speed in MHz]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>3</sortorder>
+                    <color>A54F10</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Processor(_Total)\Reservation in MHz]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Virtual Windows CPU Processor Time</name>
+            <graph_items>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Processor(_Total)\% Processor Time]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Virtual Windows CPU Stolen Time</name>
+            <graph_items>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Processor(_Total)\CPU stolen time]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Virtual Windows Memory Performance</name>
+            <graph_items>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Active in MB]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <color>F63100</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Ballooned in MB]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>3</sortorder>
+                    <color>FC6EA3</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Mapped in MB]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>4</sortorder>
+                    <color>6C59DC</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Overhead in MB]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>5</sortorder>
+                    <color>AC8C14</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Swapped in MB]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>6</sortorder>
+                    <color>611F27</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Target Size]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>7</sortorder>
+                    <color>F230E0</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Used in MB]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Virtual Windows Memory Shares</name>
+            <graph_items>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Shared in MB]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <color>F63100</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Shared Saved in MB]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>3</sortorder>
+                    <color>2774A4</color>
+                    <item>
+                        <host>CS3 - Virtual Windows Machines</host>
+                        <key>perf_counter_en[\VM Memory\Memory Shares]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+    </graphs>
 </zabbix_export>
